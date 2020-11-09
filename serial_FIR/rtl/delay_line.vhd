@@ -21,11 +21,14 @@ entity delay_line is
     --! Write address of the new sample
     write_address : in  unsigned(ADDRESS_WIDTH-1 downto 0);
     --! Read address of stored samples
-    read_address  : in  unsigned(ADDRESS_WIDTH-1 downto 0);
+    read_address_1  : in  unsigned(ADDRESS_WIDTH-1 downto 0);
+    read_address_2  : in  unsigned(ADDRESS_WIDTH-1 downto 0);
     --! Sampple input (write) (Synchronous)
     sample_in     : in  signed (SAMPLE_WIDTH-1 downto 0);
     --! Sample output (read). (Asynchronous)
-    sample_out    : out signed (SAMPLE_WIDTH-1 downto 0));
+    sample_out_1    : out signed (SAMPLE_WIDTH-1 downto 0);
+     sample_out_2    : out signed (SAMPLE_WIDTH-1 downto 0)
+  );
 
 end delay_line;
 
@@ -49,7 +52,7 @@ begin
   end process;
 
   -- Asynchronous read from sample memory
-  sample_out <= data(to_integer(read_address));
-
+  sample_out_1 <= data(to_integer(read_address_1));
+  sample_out_2 <= data(to_integer(read_address_2));
 end behaviour;
 

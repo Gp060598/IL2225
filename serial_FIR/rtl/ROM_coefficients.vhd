@@ -11,9 +11,12 @@ entity ROM_coefficients is
 
   port (
     --! Address selector
-    coeff_addr : in  unsigned(ADDRESS_WIDTH-1 downto 0);
+    coeff_addr_1 : in  unsigned(ADDRESS_WIDTH-1 downto 0);
+    coeff_addr_2 : in  unsigned(ADDRESS_WIDTH-1 downto 0);
     --! Coefficient output
-    coeff_out  : out signed (SAMPLE_WIDTH-1 downto 0));
+    coeff_out_1  : out signed (SAMPLE_WIDTH-1 downto 0);
+    coeff_out_2:out signed(sample_width-1 downto 0)
+        );
 
 end entity ROM_coefficients;
 
@@ -39,6 +42,6 @@ begin
   all_coeffs(12) <= "0000000001";
 
   -- Select the coefficient position specified in coeff_addr
-  coeff_out <= all_coeffs(to_integer(unsigned(coeff_addr)));
-
+  coeff_out_1 <= all_coeffs(to_integer(unsigned(coeff_addr_1)));
+  coeff_out_2 <= all_coeffs(to_integer(unsigned(coeff_addr_2)));
 end architecture behavior;

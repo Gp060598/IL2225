@@ -3,10 +3,10 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.types_and_constants.all;
 
-entity partially_parallel_FIR_tb is
-end entity partially_parallel_FIR_tb;
+entity serial_FIR_tb is
+end entity serial_FIR_tb;
 
-architecture behavior of partially_parallel_FIR_tb is
+architecture behavior of serial_FIR_tb is
 
   signal clk          : std_logic := '0';
   signal n_rst        : std_logic := '0';

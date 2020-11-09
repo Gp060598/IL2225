@@ -27,10 +27,10 @@ architecture structural of serial_FIR is
   signal write_enable        : std_logic;
   signal result              : signed(RESULT_WIDTH-1 downto 0);
   signal write_address       : unsigned(ADDRESS_WIDTH-1 downto 0);
-  signal read_address        : unsigned(ADDRESS_WIDTH-1 downto 0);
-  signal coefficient_address : unsigned(ADDRESS_WIDTH-1 downto 0);
-  signal sample_out          : signed(SAMPLE_WIDTH-1 downto 0);
-  signal coefficient         : signed(SAMPLE_WIDTH-1 downto 0);
+  signal read_address_1,read_address_2: unsigned(ADDRESS_WIDTH-1 downto 0);
+  signal coefficient_address_2,coefficient_address_1: unsigned(ADDRESS_WIDTH-1 downto 0);
+  signal sample_out_1,sample_out_2          : signed(SAMPLE_WIDTH-1 downto 0);
+  signal coefficient_1,coefficient_2         : signed(SAMPLE_WIDTH-1 downto 0);
   signal output_ready_tmp    : std_logic;
 
 begin
@@ -40,8 +40,12 @@ begin
       clk         => clk,
       n_rst       => n_rst,
       n_rst_MAC   => n_rst_MAC,
-      sample_in   => sample_out,
-      coefficient => coefficient,
+      sample_in_1   => sample_out_1,
+      coefficient_1 => coefficient_1,
+      sample_in_2=>sample_out_2,
+      coefficient_2=>coefficient_2,
+      read_address_1=>read_address_1,
+      read_address_2=>read_address_2,
       result      => result);
 
   FSM_1 : entity work.FSM
@@ -51,15 +55,19 @@ begin
       new_sample          => new_sample,
       write_enable        => write_enable,
       write_address       => write_address,
-      read_address        => read_address,
+      read_address_1        => read_address_1,
+      read_address_2      =>read_address_2,
       output_ready        => output_ready_tmp,
       n_rst_MAC           => n_rst_MAC,
-      coefficient_address => coefficient_address);
+      coefficient_address_1 => coefficient_address_1,
+      coefficient_address_2 => coefficient_address_2);
 
   ROM_coefficients_1 : entity work.ROM_coefficients
     port map (
-      coeff_addr => coefficient_address,
-      coeff_out  => coefficient);
+      coeff_addr_1 => coefficient_address_1,
+      coeff_addr_2=>coefficient_address_2,
+      coeff_out_1  => coefficient_1,
+      coeff_out_2=>coefficient_2 );
 
   delay_line_1 : entity work.delay_line
     port map (
@@ -69,8 +77,10 @@ begin
       write_address => write_address,
       write_enable  => write_enable,
       sample_in     => sample_in,
-      read_address  => read_address,
-      sample_out    => sample_out);
+      read_address_1  => read_address_1,
+      read_address_2=>read_address_2,
+      sample_out_1  => sample_out_1,
+       sample_out_2=>sample_out_2);
 
   output_select : output <= result when (output_ready_tmp = '1') else (others => '0');
   output_ready <= output_ready_tmp;
